@@ -4,6 +4,7 @@ import json
 from weibo import APIClient
 
 # necessary information
+# [configure reference] http://blog.csdn.net/minenki/article/details/8836293
 APP_KEY = ''
 APP_SECRET = ''
 CALLBACK_URL = 'https://api.weibo.com/oauth2/default.html'
@@ -67,23 +68,23 @@ for PAGE in range(1, TotalPage+1):
 
 # write weibos' analysis to file
 state = open('state.csv', 'w') 
+SeparateMark = "\t"
 # write the head of from
-line = "id\tnickname\tcreated_at\treposts_count\tcomments_count\ttext\tnormal\tpicture\tvideo\tmusic\n" 
+line = "id" + SeparateMark + "nickname" + SeparateMark + "created_at" + SeparateMark + "reposts_count"+ SeparateMark +"comments_count" + SeparateMark + "text" + SeparateMark + "normal" + SeparateMark + "picture" + SeparateMark + "video" + SeparateMark + "music\n" 
 state.write(line)
 state.flush()
-
 for WeiboKey in WeiboList.items():
     # generate every weibo's analysis
     Weibo = WeiboKey[1]
-    line = Weibo["id"] + '\t'
-    line += Weibo["nickname"] + '\t'
-    line += Weibo["created_at"] + '\t'
-    line += Weibo["reposts_count"] + '\t'
-    line += Weibo["comments_count"] + '\t'
-    line += Weibo["text"] + '\t'
-    line += str(Weibo["normal"]) + '\t'
-    line += str(Weibo["picture"]) + '\t'
-    line += str(Weibo["video"]) + '\t'
+    line = Weibo["id"] + SeparateMark 
+    line += Weibo["nickname"] + SeparateMark 
+    line += Weibo["created_at"] + SeparateMark
+    line += Weibo["reposts_count"] + SeparateMark
+    line += Weibo["comments_count"] + SeparateMark
+    line += Weibo["text"] + SeparateMark
+    line += str(Weibo["normal"]) + SeparateMark
+    line += str(Weibo["picture"]) + SeparateMark
+    line += str(Weibo["video"]) + SeparateMark
     line += str(Weibo["music"]) + '\n'
     # write to file
     state.write(line)
