@@ -1,0 +1,129 @@
+<html>
+<head>
+
+<script type="text/javascript">
+function SeqStat() {
+	var Seq1s = document.getElementById("Seq1").value
+	var Seq2s = document.getElementById("Seq2").value
+	Seq1s = Seq1s.toUpperCase()
+	Seq2s = Seq2s.toUpperCase()
+	// deal with sequence 1
+	var Seq1Acnt = 0, Seq1Tcnt = 0, Seq1Gcnt = 0, Seq1Ccnt = 0
+	for (i = 0; i < Seq1s.length; i++) {
+		var Seq1ch = Seq1s.substring(i, i+1)
+		if (Seq1ch == "A") Seq1Acnt = Seq1Acnt + 1
+		if (Seq1ch == "T") Seq1Tcnt = Seq1Tcnt + 1
+		if (Seq1ch == "G") Seq1Gcnt = Seq1Gcnt + 1
+		if (Seq1ch == "C") Seq1Ccnt = Seq1Ccnt + 1	
+	}
+	//alert(Seq1Acnt.toString())
+	if (Seq1Acnt + Seq1Tcnt + Seq1Gcnt + Seq1Ccnt == Seq1s.length)
+		document.getElementById("Seq1is").value = "是"
+	else
+		document.getElementById("Seq1is").value = "不是"
+	document.getElementById("Seq1A").value = Seq1Acnt.toString()
+	document.getElementById("Seq1T").value = Seq1Tcnt.toString()
+	document.getElementById("Seq1G").value = Seq1Gcnt.toString()
+	document.getElementById("Seq1C").value = Seq1Ccnt.toString()
+	// deal with sequence 2
+	var Seq2Acnt = 0, Seq2Tcnt = 0, Seq2Gcnt = 0, Seq2Ccnt = 0
+	for (i = 0; i < Seq2s.length; i++) {
+		var Seq2ch = Seq2s.substring(i, i+1)
+		if (Seq2ch == "A") Seq2Acnt = Seq2Acnt + 1
+		if (Seq2ch == "T") Seq2Tcnt = Seq2Tcnt + 1
+		if (Seq2ch == "G") Seq2Gcnt = Seq2Gcnt + 1
+		if (Seq2ch == "C") Seq2Ccnt = Seq2Ccnt + 1	
+	}
+	//alert(Seq2Acnt.toString())
+	if (Seq2Acnt + Seq2Tcnt + Seq2Gcnt + Seq2Ccnt == Seq2s.length)
+		document.getElementById("Seq2is").value = "是"
+	else
+		document.getElementById("Seq2is").value = "不是"
+	document.getElementById("Seq2A").value = Seq2Acnt.toString()
+	document.getElementById("Seq2T").value = Seq2Tcnt.toString()
+	document.getElementById("Seq2G").value = Seq2Gcnt.toString()
+	document.getElementById("Seq2C").value = Seq2Ccnt.toString()
+}
+function SeqCmp()
+{
+	if(document.getElementById("Seq2is").value == "不是") {
+		alert("仅能对 DNA 序列进行比对!")
+		return
+	}
+	var Seq1s = document.getElementById("Seq1").value
+	var Seq2s = document.getElementById("Seq2").value
+	var Limit = 999
+	Seq1s = Seq1s.toUpperCase()
+	Seq2s = Seq2s.toUpperCase()
+	// initialize
+	var MaxL = Math.max(Seq1s.length, Seq2s.length)
+	var ans = 0
+	var f = new Array(MaxL)
+	for(i = 0; i < MaxL; i++) {
+		f[i] = new Array(MaxL)
+		for(j = 0; j < MaxL; j++) {
+			f[i][j] = Limit
+			if(i == 0) f[i][j] = j
+			if(j == 0) f[i][j] = i
+			//alert(f[i][j])
+		}
+	}
+	//alert(f[0][0])
+	// dynamic programming
+	for(i = 1; i < MaxL; i++)
+		for(j = 1; j < MaxL; j++) {
+			if(i < Seq1s.length)
+				f[i][j] = Math.min(f[i][j], f[i-1][j]+1)
+			if(j < Seq2s.length)
+				f[i][j] = Math.min(f[i][j], f[i][j-1]+1)
+			if(i < Seq1s.length && j < Seq2s.length)
+				f[i][j] = Math.min(f[i][j], f[i-1][j-1] + !(Seq1s.substring(i, i+1) == Seq2s.substring(j, j+1)))
+			//alert(f[i][j])
+		}
+	// return sequence aligment result
+	//alert(f[0])
+	var ans = f[Seq1s.length-1][Seq2s.length-1]
+	if (ans == Limit) ans = -1;
+	document.getElementById("Score").value = ans.toString()
+}
+</script>
+
+</head>
+<body>
+
+<form id="form" id="form">
+  <fieldset>
+    <legend>编辑距离</legend>
+	序列1: 
+		<input type="text" id="Seq1" width="750" maxlength="100">
+		<br />
+	序列2: 
+	<input type="text" id="Seq2" width="750" maxlength="100">
+		<br />
+	<input type="button" onclick="SeqStat()" value="序列统计">
+  </fieldset>
+  <fieldset>
+    <legend>序列统计结果</legend>
+	序列1 <input type="text" id="Seq1is" value="" readonly="true"> 基因序列. <br />
+		A: <input type="text" id="Seq1A" value="" readonly="true">
+		T: <input type="text" id="Seq1T" value="" readonly="true">
+		G: <input type="text" id="Seq1G" value="" readonly="true">
+		C: <input type="text" id="Seq1C" value="" readonly="true">
+		<br />
+	序列2 <input type="text" id="Seq2is" value="" readonly="true"> 基因序列. <br />
+		A: <input type="text" id="Seq2A" value="" readonly="true">
+		T: <input type="text" id="Seq2T" value="" readonly="true">
+		G: <input type="text" id="Seq2G" value="" readonly="true">
+		C: <input type="text" id="Seq2C" value="" readonly="true">
+		<br />
+	<input type="button" onclick="SeqCmp()" value="序列比对">
+  </fieldset>
+  <fieldset>
+    <legend>序列匹配结果</legend>
+	匹配程度评分: 
+		<input type="text" id="Score" value="" readonly="true">
+  </fieldset>
+</form>
+
+</body>
+</html>
