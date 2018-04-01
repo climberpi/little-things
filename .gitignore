@@ -12,3 +12,9 @@ weibo_analysis_api.py.bak
 .idea/workspace.xml
 
 .idea/modules.xml
+
+*.csv
+
+weibo_2.py
+
+weibo_analysis_api.py
